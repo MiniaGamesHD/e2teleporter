@@ -3,7 +3,9 @@
 @outputs Location:vector Teleport ResetKB
 @persist Password:string LockMenu Background:string BackgroundMenu Load Check Menu
 @persist I
+@persist WebVersion:string Ent:entity
 
+Version = "1.0"
 #ifdef httpData() 
         runOnHTTP(1) 
     #endif
@@ -11,7 +13,7 @@
 #Version Check (SEND REQUEST)
     #ifdef httpData()
     if(httpCanRequest()) {
-        httpRequest("https://raw.github.com/GrimKriegor/assistant/master/VERSION")
+        httpRequest("https://raw.githubusercontent.com/MiniaGamesHD/e2teleporter/master/code.txt")
     }
     #else
     print("L'extension E2 HTTP est desactiver, l'autoupdate est OFF.")
@@ -19,6 +21,31 @@
     
     entity():soundPlay(1,0,"buttons/blip2.wav")  
     
+    #Version Check
+#ifdef httpData()
+if (httpClk() & httpRequestUrl()=="https://raw.githubusercontent.com/MiniaGamesHD/e2teleporter/master/code.txt") {
+    VersionInfo=httpData():trim():explode(";")
+	   WebVersion=VersionInfo:string(1)
+    MOTD=VersionInfo:string(2)
+    
+	   if (Version!=WebVersion & WebVersion!="") {timer("versioncheck",7000)}
+    if (MOTD!="") {timer("motd",20000)}
+}
+if(clk("versioncheck")){
+    hint("Version ["+WebVersion+"] is avaliable on the web!",7) 
+    timer("versioncheck2",2000)
+}
+    if(clk("versioncheck2")) {hint("Type /update to update from ["+Version+"] to ["+WebVersion+"]",7)}
+    if(clk("motd")) {hint("Message from Grim: "+MOTD,7) , Ent:soundPlay(1,0,"ui/buttonrollover.wav")}
+#endif
+
+#Updater & Related --------------------------------------------------
+    if (owner():lastSaid()=="/update") {
+        hideChat(1)
+        timer("update",10000)
+    hint("Attempting update to version ["+WebVersion+"]",5) 
+        entity():soundPlay(1,0,"buttons/button9.wav")
+    }
 
 if(first()){
     Background = "console/background02"
