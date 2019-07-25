@@ -1,0 +1,391 @@
+@name Teleporter
+@inputs EGP1:wirelink User1:entity Power Keyboard:string
+@outputs Location:vector Teleport ResetKB
+@persist Password:string LockMenu Background:string BackgroundMenu Load Check Menu
+@persist I
+
+#ifdef httpData() 
+        runOnHTTP(1) 
+    #endif
+    
+#Version Check (SEND REQUEST)
+    #ifdef httpData()
+    if(httpCanRequest()) {
+        httpRequest("https://raw.github.com/GrimKriegor/assistant/master/VERSION")
+    }
+    #else
+    print("L'extension E2 HTTP est desactiver, l'autoupdate est OFF.")
+    #endif
+    
+    entity():soundPlay(1,0,"buttons/blip2.wav")  
+    
+
+if(first()){
+    Background = "console/background02"
+    BackgroundMenu = 0
+    Password = "stargate"
+    ResetKB = 0
+}
+
+if(Power == 1){
+    Menu = 1
+}
+else{
+    EGP1:egpClear()
+    EGP1:egpText(999,"NO SIGNAL",vec2(150,200))
+    EGP1:egpSize(999, 50)
+    LockMenu = 0
+    Load = 0
+    Menu = 0
+}
+    
+if(LockMenu == 1){
+    
+    EGP1:egpClear()
+    EGP1:egpBox(1,vec2(512/2,512/2),vec2(512,512))
+    EGP1:egpMaterial(1,Background)
+    
+    #Background Selector
+    EGP1:egpRoundedBox(2,vec2(450,50),vec2(100,50))
+    EGP1:egpColor(2,vec(70,70,70))
+    
+    EGP1:egpText(3,"Background",vec2(407,40))
+    
+    EGP1:egpRoundedBox(12,vec2(70,50),vec2(300,55))
+    EGP1:egpColor(12,vec(150,150,150))
+    EGP1:egpText(13,"Bienvenue !",vec2(25,32))
+    EGP1:egpSize(13, 35)
+    
+    EGP1:egpText(14,"Veuillez entrer le mot de passe",vec2(100,200))
+    EGP1:egpSize(14, 25)
+    
+    EGP1:egpRoundedBox(15,vec2(260,260),vec2(430,40))
+    EGP1:egpColor(15,vec(230,230,230))
+    
+    EGP1:egpText(16,Keyboard,vec2(60,247))
+    EGP1:egpSize(16, 25)
+    EGP1:egpColor(16,vec(0,0,0))
+    
+    EGP1:egpRoundedBox(17,vec2(450,260),vec2(50,40))
+    EGP1:egpColor(17,vec(40,40,40))
+    EGP1:egpText(18,"<-",vec2(435,245))
+    EGP1:egpSize(18, 30)
+    
+}
+else{
+    EGP1:egpClear()
+}
+
+
+if(BackgroundMenu == 1){
+    EGP1:egpColor(2,vec(130,130,130))
+        
+    EGP1:egpRoundedBox(4,vec2(450,100),vec2(100,50))
+    EGP1:egpColor(4,vec(90,90,90))
+    EGP1:egpText(5,"Background1",vec2(402,90))
+    
+    EGP1:egpRoundedBox(6,vec2(450,150),vec2(100,50))
+    EGP1:egpColor(6,vec(90,90,90))
+    EGP1:egpText(7,"Background2",vec2(402,140))
+    
+    EGP1:egpRoundedBox(8,vec2(450,200),vec2(100,50))
+    EGP1:egpColor(8,vec(90,90,90))
+    EGP1:egpText(9,"Background3",vec2(402,190))
+    
+    #Close Menu
+    EGP1:egpRoundedBox(10,vec2(450,250),vec2(100,50))
+    EGP1:egpColor(10,vec(90,90,90))
+    EGP1:egpText(11,"Close Menu",vec2(407,240))
+}
+else{
+    EGP1:egpColor(2,vec(70,70,70))
+    
+    EGP1:egpRemove(4)
+    EGP1:egpRemove(5)
+    EGP1:egpRemove(6)
+    EGP1:egpRemove(7)
+    EGP1:egpRemove(8)
+    EGP1:egpRemove(9)
+    
+    EGP1:egpRemove(10) #Close Menu
+    EGP1:egpRemove(11)
+}
+    
+if(changed(User1) & User1){
+    Cursor = EGP1:egpCursor(User1)
+    BoutonGauche = EGP1:egpPos(2) - EGP1:egpSize(2)/2
+    BoutonDroit = EGP1:egpPos(2) + EGP1:egpSize(2)/2
+    
+    if(inrange(Cursor,BoutonGauche,BoutonDroit)){
+        BackgroundMenu = 1
+    }
+}
+
+if(changed(User1) & User1){
+    Cursor = EGP1:egpCursor(User1)
+    BoutonGauche = EGP1:egpPos(4) - EGP1:egpSize(4)/2
+    BoutonDroit = EGP1:egpPos(4) + EGP1:egpSize(4)/2
+    
+    if(inrange(Cursor,BoutonGauche,BoutonDroit)){
+        EGP1:egpColor(4,vec(110,110,110))
+        EGP1:egpColor(6,vec(90,90,90))
+        EGP1:egpColor(8,vec(90,90,90))
+        Background = "console/background02"
+    }
+}
+
+if(changed(User1) & User1){
+    Cursor = EGP1:egpCursor(User1)
+    BoutonGauche = EGP1:egpPos(6) - EGP1:egpSize(6)/2
+    BoutonDroit = EGP1:egpPos(6) + EGP1:egpSize(6)/2
+    
+    if(inrange(Cursor,BoutonGauche,BoutonDroit)){
+        EGP1:egpColor(4,vec(90,90,90))
+        EGP1:egpColor(6,vec(110,110,110))
+        EGP1:egpColor(8,vec(90,90,90))
+        Background = "console/background03"
+    }
+}
+
+if(changed(User1) & User1){
+    Cursor = EGP1:egpCursor(User1)
+    BoutonGauche = EGP1:egpPos(8) - EGP1:egpSize(8)/2
+    BoutonDroit = EGP1:egpPos(8) + EGP1:egpSize(8)/2
+    
+    if(inrange(Cursor,BoutonGauche,BoutonDroit)){
+        EGP1:egpColor(4,vec(90,90,90))
+        EGP1:egpColor(6,vec(90,90,90))
+        EGP1:egpColor(8,vec(110,110,110))
+        Background = "console/background04"
+    }
+}
+
+if(changed(User1) & User1){
+    Cursor = EGP1:egpCursor(User1)
+    BoutonGauche = EGP1:egpPos(10) - EGP1:egpSize(10)/2
+    BoutonDroit = EGP1:egpPos(10) + EGP1:egpSize(10)/2
+    
+    if(inrange(Cursor,BoutonGauche,BoutonDroit)){
+        EGP1:egpColor(4,vec(90,90,90))
+        EGP1:egpColor(6,vec(90,90,90))
+        EGP1:egpColor(8,vec(90,90,90))
+        BackgroundMenu = 0
+    }
+}
+
+if(changed(User1) & User1){
+    Cursor = EGP1:egpCursor(User1)
+    BoutonGauche = EGP1:egpPos(17) - EGP1:egpSize(17)/2
+    BoutonDroit = EGP1:egpPos(17) + EGP1:egpSize(17)/2
+    
+    if(inrange(Cursor,BoutonGauche,BoutonDroit)){
+        EGP1:egpColor(4,vec(90,90,90))
+        EGP1:egpColor(6,vec(90,90,90))
+        EGP1:egpColor(8,vec(90,90,90))
+        Check = 1
+        EGP1:egpColor(17,vec(60,60,60))
+        timer("color",700)
+        if(clk("color")){
+            EGP1:egpColor(17,vec(40,40,40))
+        }
+    }
+}
+
+if(Check == 1){
+    if(Keyboard == Password){
+        LockMenu = 0
+        Load = 1
+        ResetKB = 1
+        timer("resetkb",500)
+        if(clk("resetkb")){
+            ResetKB = 0
+        }
+            timer("waitfordisablecheck",1000)
+            if(clk("waitfordisablecheck")){
+                Check = 0
+            }
+    }
+    elseif(Keyboard != Password){
+        EGP1:egpText(14,"Mot de passe incorrect !",vec2(100,200))
+        EGP1:egpColor(14,vec(255,0,0))
+        ResetKB = 1
+        timer("resetkb",500)
+        if(clk("resetkb")){
+            ResetKB = 0
+        }
+        timer("inc",1000)
+        if(clk("inc")){
+            Check = 0
+            EGP1:egpText(14,"Veuillez entrer un mot de passe",vec2(100,200))
+            EGP1:egpColor(14,vec(255,255,255))
+        }
+    }
+}
+
+if(Load == 1){
+        runOnTick(1)
+    EGP1:egpClear()
+    EGP1:egpBox(1,vec2(512/2,512/2),vec2(512,512))
+    EGP1:egpMaterial(1,Background)
+    
+    EGP1:egpText(19,"Chargement en cours",vec2(512/2,190))
+    EGP1:egpAlign(19, 1)
+    EGP1:egpSize(19, 30)
+    EGP1:egpColor(19,vec(0,0,0))
+    
+    EGP1:egpText(20,"Chargement en cours",vec2(252,187))
+    EGP1:egpAlign(20, 1)
+    EGP1:egpSize(20, 30)
+    EGP1:egpColor(20,vec(255,255,255))
+    
+    EGP1:egpBox(21,vec2(512/2,512/2),vec2(40))
+    EGP1:egpColor(21,vec(255,0,0))
+    EGP1:egpCircleOutline(22,vec2(512/2,512/2),vec2(30))
+
+    EGP1:egpRoundedBoxOutline(23,vec2(512/2,320),vec2(400,35))
+    EGP1:egpSize(23, 5)
+    
+    
+if(I < 370){
+    I+=0.5
+    EGP1:egpAngle(21, I)
+    EGP1:egpRoundedBox(24,vec2(512/2,320),vec2(35+I,35))
+}
+elseif(I > 365){
+    EGP1:egpRemove(19)
+    EGP1:egpRemove(20)
+    EGP1:egpRemove(21)
+    EGP1:egpRemove(22)
+    EGP1:egpRemove(23)
+    
+    EGP1:egpText(25,"Chargement Termine !",vec2(512/2,512/2))
+    EGP1:egpAlign(25, 1)
+    EGP1:egpSize(25, 30)
+    EGP1:egpColor(25,vec(0,255,0))
+    
+    timer("endloading",1500)
+}
+}
+if(clk("endloading")){
+    LockMenu = 0
+    Load = 0
+    Menu = 1
+}
+
+if(Menu == 1){
+    EGP1:egpClear()
+    EGP1:egpBox(1,vec2(512/2,512/2),vec2(512,512))
+    EGP1:egpMaterial(1,Background)
+    
+    EGP1:egpRoundedBox(26,vec2(110,50),vec2(300,55))
+    EGP1:egpColor(26,vec(150,150,150))
+    EGP1:egpText(27,"Menu Principal",vec2(25,32))
+    EGP1:egpSize(27, 35)
+    
+    EGP1:egpText(28,"Ce menu est en dev",vec2(512/2,512/2))
+    EGP1:egpAlign(28, 1)
+    EGP1:egpSize(28, 35)
+    
+    #Background Selector
+    EGP1:egpRoundedBox(29,vec2(450,50),vec2(100,50))
+    EGP1:egpColor(29,vec(70,70,70))
+    
+    EGP1:egpText(30,"Background",vec2(407,40))
+    
+    if(changed(User1) & User1){
+    Cursor = EGP1:egpCursor(User1)
+    BoutonGauche = EGP1:egpPos(29) - EGP1:egpSize(29)/2
+    BoutonDroit = EGP1:egpPos(29) + EGP1:egpSize(29)/2
+    
+    if(inrange(Cursor,BoutonGauche,BoutonDroit)){
+        BackgroundMenu = 1
+    }
+    }
+    
+if(BackgroundMenu == 1){
+    EGP1:egpColor(29,vec(130,130,130))
+        
+    EGP1:egpRoundedBox(31,vec2(450,100),vec2(100,50))
+    EGP1:egpColor(31,vec(90,90,90))
+    EGP1:egpText(32,"Background1",vec2(402,90))
+    
+    EGP1:egpRoundedBox(33,vec2(450,150),vec2(100,50))
+    EGP1:egpColor(33,vec(90,90,90))
+    EGP1:egpText(34,"Background2",vec2(402,140))
+    
+    EGP1:egpRoundedBox(35,vec2(450,200),vec2(100,50))
+    EGP1:egpColor(35,vec(90,90,90))
+    EGP1:egpText(36,"Background3",vec2(402,190))
+    
+    #Close Menu
+    EGP1:egpRoundedBox(37,vec2(450,250),vec2(100,50))
+    EGP1:egpColor(37,vec(90,90,90))
+    EGP1:egpText(38,"Close Menu",vec2(407,240))
+}
+else{
+    EGP1:egpColor(29,vec(70,70,70))
+    
+    EGP1:egpRemove(31)
+    EGP1:egpRemove(32)
+    EGP1:egpRemove(33)
+    EGP1:egpRemove(34)
+    EGP1:egpRemove(35)
+    EGP1:egpRemove(36)
+    
+    EGP1:egpRemove(37) #Close Menu
+    EGP1:egpRemove(38)
+}
+
+    if(changed(User1) & User1){
+    Cursor = EGP1:egpCursor(User1)
+    BoutonGauche = EGP1:egpPos(31) - EGP1:egpSize(31)/2
+    BoutonDroit = EGP1:egpPos(31) + EGP1:egpSize(31)/2
+    
+    if(inrange(Cursor,BoutonGauche,BoutonDroit)){
+        EGP1:egpColor(31,vec(110,110,110))
+        EGP1:egpColor(33,vec(90,90,90))
+        EGP1:egpColor(35,vec(90,90,90))
+        Background = "console/background02"
+    }
+}
+
+if(changed(User1) & User1){
+    Cursor = EGP1:egpCursor(User1)
+    BoutonGauche = EGP1:egpPos(33) - EGP1:egpSize(33)/2
+    BoutonDroit = EGP1:egpPos(33) + EGP1:egpSize(33)/2
+    
+    if(inrange(Cursor,BoutonGauche,BoutonDroit)){
+        EGP1:egpColor(31,vec(90,90,90))
+        EGP1:egpColor(33,vec(110,110,110))
+        EGP1:egpColor(35,vec(90,90,90))
+        Background = "console/background03"
+    }
+}
+
+if(changed(User1) & User1){
+    Cursor = EGP1:egpCursor(User1)
+    BoutonGauche = EGP1:egpPos(35) - EGP1:egpSize(35)/2
+    BoutonDroit = EGP1:egpPos(35) + EGP1:egpSize(35)/2
+    
+    if(inrange(Cursor,BoutonGauche,BoutonDroit)){
+        EGP1:egpColor(31,vec(90,90,90))
+        EGP1:egpColor(33,vec(90,90,90))
+        EGP1:egpColor(35,vec(110,110,110))
+        Background = "console/background04"
+    }
+}
+
+if(changed(User1) & User1){
+    Cursor = EGP1:egpCursor(User1)
+    BoutonGauche = EGP1:egpPos(37) - EGP1:egpSize(37)/2
+    BoutonDroit = EGP1:egpPos(37) + EGP1:egpSize(37)/2
+    
+    if(inrange(Cursor,BoutonGauche,BoutonDroit)){
+        EGP1:egpColor(31,vec(90,90,90))
+        EGP1:egpColor(33,vec(90,90,90))
+        EGP1:egpColor(35,vec(90,90,90))
+        BackgroundMenu = 0
+    }
+}
+
+}
